@@ -1,11 +1,11 @@
-CFLAGS := -g -Wall -Werror -pedantic --std=c99
+CFLAGS := -g -Wall -Werror -pedantic --std=c99 -Wno-unused-const-variable -Wno-format
 SRCS := *.c
 HEADERS := *.h
 
-all: driver
+all: haptic-driver
 
-driver: $(SRCS)
-	gcc $(CFLAGS) -o driver $(SRCS)
+haptic-driver: $(SRCS)
+	$(CC) $(CFLAGS) -o driver $(SRCS)
 
 format: $(SRCS) $(HEADERS)
 	clang-format -i $(SRCS) $(HEADERS)
