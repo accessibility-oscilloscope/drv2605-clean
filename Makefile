@@ -5,12 +5,12 @@ HEADERS := *.h
 all: haptic-driver
 
 haptic-driver: $(SRCS)
-	$(CC) $(CFLAGS) -o driver $(SRCS)
+	$(CC) $(CFLAGS) -o $@ $(SRCS)
 
 format: $(SRCS) $(HEADERS)
 	clang-format -i $(SRCS) $(HEADERS)
 
 clean:
-	rm -f driver
+	rm -f haptic-driver
 
 .phony: clean all

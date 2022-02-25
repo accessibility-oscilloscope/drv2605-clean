@@ -1,7 +1,7 @@
 #ifndef DRV2605_H
 #define DRV2605_H
 
-#include "linux_i2c.h"
+#include "linux-i2c.h"
 
 typedef enum {
   REG_STATUS = 0x00,
@@ -91,7 +91,8 @@ void drv2605_set_mode(struct ht_instance *inst, mode_E mode);
 
 void drv2605_write_realtime(struct ht_instance *inst, uint8_t val);
 
-void drv2605_set_waveform(struct ht_instance *inst, uint8_t slot, uint8_t effect);
+void drv2605_set_waveform(struct ht_instance *inst, uint8_t slot,
+                          uint8_t effect);
 
 void drv2605_go(struct ht_instance *inst);
 

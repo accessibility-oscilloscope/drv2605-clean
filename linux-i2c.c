@@ -4,13 +4,13 @@
 #include <linux/i2c-dev.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <syslog.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <syslog.h>
 #include <unistd.h>
 
-#include "linux_i2c.h"
+#include "linux-i2c.h"
 
 void init_i2c(struct ht_instance *inst, unsigned int bus, unsigned int addr) {
   char filename[20];
