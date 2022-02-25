@@ -1,4 +1,5 @@
 #include "drv2605.h"
+#include "haptic-interface.h"
 #include "linux-i2c.h"
 
 const struct ht_hardware_config VYB_COIN_ERM = {
