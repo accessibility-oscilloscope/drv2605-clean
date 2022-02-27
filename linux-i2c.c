@@ -12,37 +12,37 @@
 
 #include "linux-i2c.h"
 
-void init_i2c(struct ht_instance *inst, unsigned int bus, unsigned int addr) {
+void init_i2c(struct i2c_data *i2c, unsigned int bus, unsigned int addr) {
   char filename[20];
   snprintf(filename, 19, "/dev/i2c-%d", bus);
-  inst->fd = open(filename, O_RDWR);
-  if (inst->fd < 0) {
+  i2c->fd = open(filename, O_RDWR);
+  if (i2c->fd < 0) {
     syslog(LOG_ERR, "opening /dev/ file failed (%m)\n");
   }
 
   // setup device address
-  if (ioctl(inst->fd, I2C_SLAVE, addr) < 0) {
+  if (ioctl(i2c->fd, I2C_SLAVE, addr) < 0) {
     syslog(LOG_ERR, "ioctl call failed (%m)\n");
   }
 }
 
-void write_reg(struct ht_instance *inst, uint8_t reg, uint8_t val) {
+void write_reg(struct i2c_data *i2c, uint8_t reg, uint8_t val) {
   uint8_t buffer[2] = {reg, val};
 
-  if (inst->fd < 0) {
+  if (i2c->fd < 0) {
     syslog(LOG_ERR, "file descriptor does not exist\n");
     abort();
   }
-  if (write(inst->fd, buffer, 2) != 2) {
+  if (write(i2c->fd, buffer, 2) != 2) {
     syslog(LOG_ERR, "write failed\n");
     abort();
   }
 }
 
-uint8_t read_reg(struct ht_instance *inst, uint8_t reg) {
+uint8_t read_reg(struct i2c_data *i2c, uint8_t reg) {
   uint8_t buffer[1];
 
-  if (write(inst->fd, &reg, 1) != 1 || read(inst->fd, buffer, 1) != 1) {
+  if (write(i2c->fd, &reg, 1) != 1 || read(i2c->fd, buffer, 1) != 1) {
     syslog(LOG_ERR, "read failed\n");
     abort();
   }
@@ -50,10 +50,10 @@ uint8_t read_reg(struct ht_instance *inst, uint8_t reg) {
   return buffer[0];
 }
 
-void clear_bit_mask(struct ht_instance *inst, uint8_t reg, uint8_t mask) {
-  write_reg(inst, reg, read_reg(inst, reg) & ~mask);
+void clear_bit_mask(struct i2c_data *i2c, uint8_t reg, uint8_t mask) {
+  write_reg(i2c, reg, read_reg(i2c, reg) & ~mask);
 }
 
-void set_bit_mask(struct ht_instance *inst, uint8_t reg, uint8_t mask) {
-  write_reg(inst, reg, read_reg(inst, reg) | mask);
+void set_bit_mask(struct i2c_data *i2c, uint8_t reg, uint8_t mask) {
+  write_reg(i2c, reg, read_reg(i2c, reg) | mask);
 }
