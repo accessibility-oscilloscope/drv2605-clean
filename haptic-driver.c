@@ -42,10 +42,18 @@ int main(int argc, char **argv) {
     syslog(LOG_ERR, "creating and opening fifo failed (%m)\n");
   }
 
+  unsigned int rv = 0;
+
   while (1) {
 
-    if (read(fd, &interface, sizeof(interface)) != sizeof(interface)) {
+    rv = read(fd, &interface, sizeof(interface));
+
+    if (rv == 0) {
+      continue;
+    }
+    else if (rv != sizeof(interface)) {
       syslog(LOG_INFO, "read returned bad size");
+      continue;
     }
 
     if (interface.control && inst.mode != MODE_INT_TRIG) {
