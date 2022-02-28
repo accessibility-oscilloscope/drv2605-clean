@@ -54,8 +54,7 @@ int main(int argc, char **argv) {
 
     if (rv == 0) {
       continue;
-    }
-    else if (rv != sizeof(interface)) {
+    } else if (rv != sizeof(interface)) {
       syslog(LOG_INFO, "read returned bad size");
       continue;
     }
