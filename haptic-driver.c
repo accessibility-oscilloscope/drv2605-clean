@@ -36,6 +36,10 @@ int main(int argc, char **argv) {
 
   init_i2c(&inst.i2c, ACTUATOR.i2c_bus, ACTUATOR.i2c_addr);
 
+  drv2605_program(&inst, &ACTUATOR);
+
+  syslog(LOG_INFO, "programming and calibration complete\n");
+
   mkfifo(FIFO_FILE, 0666);
   int fd = open(FIFO_FILE, O_RDONLY);
   if (fd < 0) {

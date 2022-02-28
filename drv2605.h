@@ -90,7 +90,7 @@ struct ht_instance {
   struct i2c_data i2c;
 };
 
-void drv2605_program(struct ht_instance *inst, struct ht_hardware_config *conf);
+void drv2605_program(struct ht_instance *inst, const struct ht_hardware_config * conf);
 
 void drv2605_set_mode(struct ht_instance *inst, mode_E mode);
 

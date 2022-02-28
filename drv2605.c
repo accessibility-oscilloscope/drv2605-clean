@@ -8,7 +8,7 @@ static unsigned int drv2605_calculate_voltage(unsigned int mv) {
 }
 
 void drv2605_program(struct ht_instance *inst,
-                     struct ht_hardware_config *conf) {
+                     const struct ht_hardware_config *conf) {
   // enter calibration mode
   write_reg(&inst->i2c, REG_MODE, MODE_AUTOCAL);
 
