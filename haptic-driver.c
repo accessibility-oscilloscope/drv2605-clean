@@ -29,7 +29,7 @@ const struct ht_hardware_config VYB_LRA = {
     .library = LIB_LRA,
 };
 
-#define ACTUATOR VYB_LRA
+#define ACTUATOR VYB_COIN_ERM
 
 int main(int argc, char **argv) {
   struct ht_instance inst;
@@ -41,15 +41,16 @@ int main(int argc, char **argv) {
     syslog(LOG_ERR, "usage: %s $INPUT_FIFO\n", argv[0]);
     exit(1);
   }
+
+  init_i2c(&inst.i2c, ACTUATOR.i2c_bus, ACTUATOR.i2c_addr);
+  drv2605_program(&inst, &ACTUATOR);
+  syslog(LOG_INFO, "programming and calibration complete\n");
+
   mkfifo(argv[1], 0666);
   int fd = open(argv[1], O_RDONLY);
   if (fd < 0) {
     syslog(LOG_ERR, "creating and opening fifo failed (%m)\n");
   }
-
-  init_i2c(&inst.i2c, ACTUATOR.i2c_bus, ACTUATOR.i2c_addr);
-  drv2605_program(&inst, &ACTUATOR);
-  syslog(LOG_INFO, "programming and calibration complete\n");
 
   unsigned int rv = 0;
 
