@@ -1,4 +1,5 @@
 #include <fcntl.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <syslog.h>
@@ -34,17 +35,21 @@ int main(int argc, char **argv) {
   struct ht_instance inst;
   struct haptic_struct interface;
 
-  init_i2c(&inst.i2c, ACTUATOR.i2c_bus, ACTUATOR.i2c_addr);
+  openlog(NULL, LOG_PERROR, LOG_USER);
 
-  drv2605_program(&inst, &ACTUATOR);
-
-  syslog(LOG_INFO, "programming and calibration complete\n");
-
-  mkfifo(FIFO_FILE, 0666);
-  int fd = open(FIFO_FILE, O_RDONLY);
+  if (argc < 2) {
+    syslog(LOG_ERR, "usage: %s $INPUT_FIFO\n", argv[0]);
+    exit(1);
+  }
+  mkfifo(argv[1], 0666);
+  int fd = open(argv[1], O_RDONLY);
   if (fd < 0) {
     syslog(LOG_ERR, "creating and opening fifo failed (%m)\n");
   }
+
+  init_i2c(&inst.i2c, ACTUATOR.i2c_bus, ACTUATOR.i2c_addr);
+  drv2605_program(&inst, &ACTUATOR);
+  syslog(LOG_INFO, "programming and calibration complete\n");
 
   unsigned int rv = 0;
 

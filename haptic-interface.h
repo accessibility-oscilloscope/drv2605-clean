@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#define FIFO_FILE "/tmp/fifo-haptic"
-
 #define PLAYBACK_MODE_BIT 0
 
 typedef struct haptic_struct {
