@@ -78,9 +78,12 @@ int main(int argc, char **argv) {
 
     switch (inst.mode) {
     case MODE_INT_TRIG:
-      // TODO: check validity of effect
-      drv2605_set_waveform(&inst, 0, interface.data);
-      drv2605_go(&inst);
+      if (interface.data >= 1 && interface.data <= 123) {
+        drv2605_set_waveform(&inst, 0, interface.data);
+        drv2605_go(&inst);
+      } else {
+        syslog(LOG_INFO, "invalid effect");
+      }
       break;
     case MODE_REALTIME:
       val_to_write = is_closed_loop ? interface.data : interface.data / 2;
