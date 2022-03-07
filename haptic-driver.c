@@ -42,6 +42,10 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  // closed vs open loop, we only do open-loop ERM with
+  // this version of the driver
+  int is_closed_loop = ACTUATOR.type == ACTUATOR_LRA ? 1 : 0;
+
   init_i2c(&inst.i2c, ACTUATOR.i2c_bus, ACTUATOR.i2c_addr);
   drv2605_program(&inst, &ACTUATOR);
   syslog(LOG_INFO, "programming and calibration complete\n");
@@ -53,6 +57,7 @@ int main(int argc, char **argv) {
   }
 
   unsigned int rv = 0;
+  uint8_t val_to_write = 0;
 
   while (1) {
 
@@ -78,7 +83,8 @@ int main(int argc, char **argv) {
       drv2605_go(&inst);
       break;
     case MODE_REALTIME:
-      drv2605_write_realtime(&inst, interface.data);
+      val_to_write = is_closed_loop ? interface.data : interface.data / 2;
+      drv2605_write_realtime(&inst, val_to_write);
       break;
     default:
       syslog(LOG_ERR, "how did you get here? bad mode");
