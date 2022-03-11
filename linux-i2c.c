@@ -16,13 +16,15 @@ void init_i2c(struct i2c_data *i2c, unsigned int bus, unsigned int addr) {
   char filename[20];
   snprintf(filename, 19, "/dev/i2c-%d", bus);
   i2c->fd = open(filename, O_RDWR);
-  if (i2c->fd < 0) {
+  if (i2c->fd == -1) {
     syslog(LOG_ERR, "opening /dev/ file failed (%m)\n");
+    exit(-1);
   }
 
   // setup device address
   if (ioctl(i2c->fd, I2C_SLAVE, addr) < 0) {
     syslog(LOG_ERR, "ioctl call failed (%m)\n");
+    exit(-1);
   }
 }
 
@@ -31,11 +33,11 @@ void write_reg(struct i2c_data *i2c, uint8_t reg, uint8_t val) {
 
   if (i2c->fd < 0) {
     syslog(LOG_ERR, "file descriptor does not exist\n");
-    abort();
+    exit(-1);
   }
   if (write(i2c->fd, buffer, 2) != 2) {
     syslog(LOG_ERR, "write failed\n");
-    abort();
+    exit(-1);
   }
 }
 
@@ -44,7 +46,7 @@ uint8_t read_reg(struct i2c_data *i2c, uint8_t reg) {
 
   if (write(i2c->fd, &reg, 1) != 1 || read(i2c->fd, buffer, 1) != 1) {
     syslog(LOG_ERR, "read failed\n");
-    abort();
+    exit(-1);
   }
 
   return buffer[0];

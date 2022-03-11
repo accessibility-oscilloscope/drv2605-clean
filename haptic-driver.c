@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
   struct ht_instance inst;
   struct haptic_struct interface;
 
-  openlog(NULL, LOG_PERROR, LOG_USER);
+  openlog("haptic-driver", 0, LOG_USER);
 
   if (argc < 2) {
     syslog(LOG_ERR, "usage: %s $INPUT_FIFO\n", argv[0]);
@@ -50,14 +50,16 @@ int main(int argc, char **argv) {
   drv2605_program(&inst, &ACTUATOR);
   syslog(LOG_INFO, "programming and calibration complete\n");
 
-  mkfifo(argv[1], 0666);
   int fd = open(argv[1], O_RDONLY);
-  if (fd < 0) {
-    syslog(LOG_ERR, "creating and opening fifo failed (%m)\n");
+  if (fd == -1) {
+    syslog(LOG_ERR, "opening fifo failed (%m)\n");
+    exit(-1);
   }
 
   unsigned int rv = 0;
   uint8_t val_to_write = 0;
+
+  syslog(LOG_INFO, "haptic-driver: initialization complete");
 
   while (1) {
 
